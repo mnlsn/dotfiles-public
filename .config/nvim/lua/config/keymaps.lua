@@ -1,4 +1,4 @@
-local discipline = require("craftzdog.discipline")
+local discipline = require("nelsooon.discipline")
 
 discipline.cowboy()
 
@@ -7,7 +7,7 @@ local opts = { noremap = true, silent = true }
 
 -- Do things without affecting the registers
 keymap.set("n", "x", '"_x')
-keymap.set("n", "<Leader>p", '"0p')
+-- keymap.set("n", "<Leader>p", '"0p')
 keymap.set("n", "<Leader>P", '"0P')
 keymap.set("v", "<Leader>p", '"0p')
 keymap.set("n", "<Leader>c", '"_c')
@@ -64,9 +64,9 @@ keymap.set("n", "<C-j>", function()
 end, opts)
 
 keymap.set("n", "<leader>r", function()
-	require("craftzdog.hsl").replaceHexWithHSL()
+	require("nelsooon.hsl").replaceHexWithHSL()
 end)
 
 keymap.set("n", "<leader>i", function()
-	require("craftzdog.lsp").toggleInlayHints()
+	require("nelsooon.lsp").toggleInlayHints()
 end)

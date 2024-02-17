@@ -113,13 +113,13 @@ function M.hslToRgb(h, s, l)
 	return r * 255, g * 255, b * 255
 end
 
-function M.hexToHSL(hex)
-	local hsluv = require("solarized-osaka.hsluv")
-	local rgb = M.hex_to_rgb(hex)
-	local h, s, l = M.rgbToHsl(rgb[1], rgb[2], rgb[3])
+-- function M.hexToHSL(hex)
+-- 	local hsluv = require("solarized-osaka.hsluv")
+-- 	local rgb = M.hex_to_rgb(hex)
+-- 	local h, s, l = M.rgbToHsl(rgb[1], rgb[2], rgb[3])
 
-	return string.format("hsl(%d, %d, %d)", math.floor(h + 0.5), math.floor(s + 0.5), math.floor(l + 0.5))
-end
+-- 	return string.format("hsl(%d, %d, %d)", math.floor(h + 0.5), math.floor(s + 0.5), math.floor(l + 0.5))
+-- end
 
 --[[
  * Converts an HSL color value to RGB in Hex representation.
