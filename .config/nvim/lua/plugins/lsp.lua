@@ -13,6 +13,7 @@ return {
 				"typescript-language-server",
 				"css-lsp",
 				"rust-analyzer",
+				"gleam",
 			})
 		end,
 	},
@@ -60,6 +61,7 @@ return {
 						},
 					},
 				},
+				gleam = {},
 				html = {},
 				yamlls = {
 					settings = {

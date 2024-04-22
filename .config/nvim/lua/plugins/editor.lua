@@ -1,6 +1,6 @@
 return {
 	{
-		enabled = false,
+		enabled = true,
 		"folke/flash.nvim",
 		---@type Flash.Config
 		opts = {
@@ -9,6 +9,48 @@ return {
 				multi_window = false,
 				wrap = false,
 				incremental = true,
+			},
+		},
+		keys = {
+			{
+				"s",
+				mode = { "n", "x", "o" },
+				function()
+					require("flash").jump()
+				end,
+				desc = "Flash",
+			},
+			{
+				"S",
+				mode = { "n", "x", "o" },
+				function()
+					require("flash").treesitter()
+				end,
+				desc = "Flash Treesitter",
+			},
+			{
+				"r",
+				mode = "o",
+				function()
+					require("flash").remote()
+				end,
+				desc = "Remote Flash",
+			},
+			{
+				"R",
+				mode = { "o", "x" },
+				function()
+					require("flash").treesitter_search()
+				end,
+				desc = "Treesitter Search",
+			},
+			{
+				"<c-s>",
+				mode = { "c" },
+				function()
+					require("flash").toggle()
+				end,
+				desc = "Toggle Flash Search",
 			},
 		},
 	},
@@ -94,7 +136,7 @@ return {
 			{
 				"<leader>a",
 				function()
-					require("harpoon"):list():append()
+					require("harpoon"):list():add()
 				end,
 				desc = "harpoon file",
 			},
@@ -137,6 +179,7 @@ return {
 				build = "make",
 			},
 			"nvim-telescope/telescope-file-browser.nvim",
+			"debugloop/telescope-undo.nvim",
 		},
 		keys = {
 			{
@@ -169,12 +212,12 @@ return {
 				";f",
 				function()
 					local builtin = require("telescope.builtin")
-					builtin.find_files({
+					builtin.current_buffer_fuzzy_find({
 						no_ignore = false,
 						hidden = true,
 					})
 				end,
-				desc = "Lists files in your current working directory, respects .gitignore",
+				desc = "Fuzzy find in current buffer",
 			},
 			{
 				";r",
@@ -211,7 +254,7 @@ return {
 				desc = "Resume the previous telescope picker",
 			},
 			{
-				";e",
+				";d",
 				function()
 					local builtin = require("telescope.builtin")
 					builtin.diagnostics()
@@ -227,26 +270,9 @@ return {
 				desc = "Lists Function names, variables, from Treesitter",
 			},
 			{
-				"sf",
-				function()
-					local telescope = require("telescope")
-
-					local function telescope_buffer_dir()
-						return vim.fn.expand("%:p:h")
-					end
-
-					telescope.extensions.file_browser.file_browser({
-						path = "%:p:h",
-						cwd = telescope_buffer_dir(),
-						respect_gitignore = false,
-						hidden = true,
-						grouped = true,
-						previewer = false,
-						initial_mode = "normal",
-						layout_config = { height = 40 },
-					})
-				end,
-				desc = "Open File Browser with the path of the current buffer",
+				";u",
+				"<cmd>Telescope undo<cr>",
+				desc = "undo history",
 			},
 		},
 		config = function(_, opts)
@@ -275,7 +301,7 @@ return {
 			}
 			opts.extensions = {
 				file_browser = {
-					theme = "dropdown",
+					theme = "ivy",
 					-- disables netrw and use telescope-file-browser in its place
 					hijack_netrw = true,
 					mappings = {
@@ -283,7 +309,6 @@ return {
 						["n"] = {
 							-- your custom normal mode mappings
 							["N"] = fb_actions.create,
-							["h"] = fb_actions.goto_parent_dir,
 							["/"] = function()
 								vim.cmd("startinsert")
 							end,
@@ -303,9 +328,171 @@ return {
 					},
 				},
 			}
+
 			telescope.setup(opts)
 			require("telescope").load_extension("fzf")
 			require("telescope").load_extension("file_browser")
+			require("telescope").load_extension("undo")
 		end,
+	},
+	{
+		"christoomey/vim-tmux-navigator",
+		cmd = {
+			"TmuxNavigateLeft",
+			"TmuxNavigateDown",
+			"TmuxNavigateUp",
+			"TmuxNavigateRight",
+			"TmuxNavigatePrevious",
+		},
+		keys = {
+			{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+			{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+			{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+			{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+			{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+		},
+	},
+	{
+		"sindrets/diffview.nvim",
+		cmd = "DiffviewOpen",
+		config = function()
+			require("diffview").setup({
+				diff_binaries = false,
+				use_icons = true,
+				file_panel = {
+					width = 35,
+				},
+			})
+		end,
+	},
+	{
+		"nvim-telescope/telescope-file-browser.nvim",
+		dependencies = {
+			"nvim-telescope/telescope.nvim",
+			"nvim-lua/plenary.nvim",
+		},
+		event = "VeryLazy",
+		keys = {
+			{ "<leader>e", "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>", desc = "File Browser" },
+		},
+	},
+	{
+		"simonmclean/triptych.nvim",
+		enabled = false,
+		event = "VeryLazy",
+		dependencies = {
+			"nvim-lua/plenary.nvim", -- required
+			"nvim-tree/nvim-web-devicons", -- optional
+		},
+		keys = {
+			{ "<leader>e", "<cmd>Triptych<cr>", desc = "Toggle triptych" },
+		},
+		config = function()
+			require("triptych").setup({
+				options = {
+					show_hidden = true,
+					line_numbers = {
+						relative = true,
+					},
+				},
+			})
+		end,
+	},
+	{
+		"max397574/better-escape.nvim",
+		config = function()
+			require("better_escape").setup({
+				mapping = { "jj" },
+				timeout = vim.o.timeoutlen,
+				cleaer_empty_lines = true,
+				keys = "<esc>",
+			})
+		end,
+	},
+	{
+		"stevearc/overseer.nvim",
+		keys = {
+			{ ";o", "<cmd>OverseerRun<cr>", desc = "Overseer Selection" },
+			{ ";O", "<cmd>OverseerToggle<cr>", desc = "Overseer Toggle UI" },
+		},
+		config = function()
+			require("overseer").setup()
+		end,
+	},
+	{
+		"kristijanhusak/vim-dadbod-ui",
+		enabled = false,
+		dependencies = {
+			{ "tpope/vim-dadbod", lazy = true },
+			{ "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
+		},
+		cmd = {
+			"DBUI",
+			"DBUIToggle",
+			"DBUIAddConnection",
+			"DBUIFindBuffer",
+		},
+		init = function()
+			-- Your DBUI configuration
+			vim.g.db_ui_use_nerd_fonts = 1
+		end,
+	},
+	{
+		"stevearc/conform.nvim",
+		opts = function()
+			local opts = {
+				formatters_by_ft = {
+					lua = { "stylua" },
+					fish = { "fish_indent" },
+					sh = { "shfmt" },
+					go = { "gofmt" },
+					rust = { "rustfmt" },
+					gleam = { "gleam" },
+					javascript = {
+						{ --[[ "prettierd", ]]
+							"prettier",
+						},
+					},
+					typescript = {
+						{ --[[ "prettierd", ]]
+							"prettier",
+						},
+					},
+					javascriptreact = {
+						{ --[[ "prettierd", ]]
+							"prettier",
+						},
+					},
+					typescriptreact = {
+						{ --[[ "prettierd", ]]
+							"prettier",
+						},
+					},
+
+					css = { --[[ "prettierd", ]]
+						"prettier",
+					},
+					scss = { "prettier" },
+				},
+			}
+			return opts
+		end,
+	},
+	{
+		"mawkler/modicator.nvim",
+		dependencies = "folke/tokyonight.nvim", -- Add your colorscheme plugin here
+		init = function()
+			-- These are required for Modicator to work
+			vim.o.cursorline = true
+			vim.o.number = true
+			vim.o.termguicolors = true
+		end,
+		opts = {
+			-- Warn if any required option above is missing. May emit false positives
+			-- if some other plugin modifies them, which in that case you can just
+			-- ignore. Feel free to remove this line after you've gotten Modicator to
+			-- work properly.
+			show_warnings = false,
+		},
 	},
 }

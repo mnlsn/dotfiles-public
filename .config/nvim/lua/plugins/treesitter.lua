@@ -1,25 +1,76 @@
 return {
 	{ "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
-
+	{
+		"nvim-treesitter/nvim-treesitter-refactor",
+		config = function()
+			require("nvim-treesitter.configs").setup({
+				refactor = {
+					smart_rename = {
+						enable = true,
+						keymaps = {
+							smart_rename = "grr",
+						},
+					},
+					navigation = {
+						enable = true,
+						keymaps = {
+							goto_definition = "gnd",
+							list_definitions = "gnD",
+							list_definitions_toc = "gO",
+							goto_next_usage = "<a-*>",
+							goto_previous_usage = "<a-#>",
+						},
+					},
+					highlight_current_scope = { enable = true },
+				},
+			})
+		end,
+	},
 	{
 		"nvim-treesitter/nvim-treesitter",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter-textobjects",
+		},
 		opts = {
+			highlight = {
+				enable = true,
+				additional_vim_regex_highlighting = false,
+			},
+			indent = {
+				enable = true,
+			},
 			ensure_installed = {
 				"astro",
+				"bash",
 				"cmake",
 				"cpp",
+				"c_sharp",
 				"css",
-				"fish",
+				"dockerfile",
+				"elixir",
+				"elm",
+				"erlang",
 				"gitignore",
 				"go",
-				"graphql",
+				"html",
 				"http",
 				"java",
+				"javascript",
+				"jsdoc",
+				"json",
+				"julia",
+				"lua",
+				"ocaml",
 				"php",
+				"python",
 				"rust",
 				"scss",
+				"solidity",
 				"sql",
 				"svelte",
+				"templ",
+				"tsx",
+				"typescript",
 			},
 
 			-- matchup = {
@@ -49,6 +100,18 @@ return {
 					update = "R",
 					goto_node = "<cr>",
 					show_help = "?",
+				},
+			},
+			textobjects = {
+				select = {
+					enable = true,
+					lookahead = true,
+					keymaps = {
+						["a="] = { query = "@assignment.outer", desc = "Select outer part of an assignment" },
+						["i="] = { query = "@assignment.inner", desc = "Select inner part of an assignment" },
+						["l="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
+						["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
+					},
 				},
 			},
 		},

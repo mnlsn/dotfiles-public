@@ -1,6 +1,7 @@
 return {
 	{
 		"nvim-neo-tree/neo-tree.nvim",
+		enabled = false,
 		opts = {
 			filesystem = {
 				filtered_items = {
@@ -29,10 +30,18 @@ return {
 				view_options = {
 					show_hidden = true,
 				},
+				float = {
+					max_width = 60,
+					max_height = 30,
+				},
+				columns = {
+					"icon",
+					"size",
+				},
 			})
 		end,
 		keys = {
-			{ "=", "<CMD>Oil<CR>", desc = "Open parent directory" },
+			{ "=", "<CMD>Oil --float <CR>", desc = "Open parent directory" },
 		},
 	},
 	-- messages, cmdline and the popupmenu
@@ -88,12 +97,16 @@ return {
 			opts.presets.lsp_doc_border = true
 		end,
 	},
-
 	{
 		"rcarriga/nvim-notify",
 		opts = {
 			timeout = 5000,
 		},
+		config = function(plugin, opts)
+			local notify = require("notify")
+			opts.background_colour = "#181825"
+			notify.setup(opts)
+		end,
 	},
 
 	-- animations
@@ -107,27 +120,6 @@ return {
 		end,
 	},
 
-	-- buffer line
-	-- {
-	-- 	"akinsho/bufferline.nvim",
-	-- 	event = "VeryLazy",
-	-- 	config = function()
-	-- 		require("bufferline").setup()
-	-- 	end,
-	-- 	keys = {
-	-- 		{ "<Tab>", "<Cmd>BufferLineCycleNext<CR>", desc = "Next tab" },
-	-- 		{ "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", desc = "Prev tab" },
-	-- 	},
-	-- 	opts = {
-	-- 		options = {
-	-- 			-- mode = "tabs",
-	-- 			-- separator_style = "slant",
-	-- 			-- show_buffer_close_icons = false,
-	-- 			-- show_close_icon = false,
-	-- 		},
-	-- 	},
-	-- },
-
 	-- statusline
 	{
 		"nvim-lualine/lualine.nvim",
@@ -135,43 +127,10 @@ return {
 		opts = {
 			options = {
 				-- globalstatus = false,
-				theme = "material",
+				theme = "auto",
 			},
 		},
 	},
-
-	-- filename
-	-- -- {
-	-- -- 	"b0o/incline.nvim",
-	-- -- 	dependencies = { "folke/tokyonight.nvim" },
-	-- -- 	event = "BufReadPre",
-	-- -- 	priority = 1200,
-	-- -- 	config = function()
-	-- -- 		local colors = require("tokyonight.colors").setup()
-	-- -- 		require("incline").setup({
-	-- -- 			highlight = {
-	-- -- 				groups = {
-	-- -- 					InclineNormal = { guibg = colors.magenta500, guifg = colors.base04 },
-	-- -- 					InclineNormalNC = { guifg = colors.violet500, guibg = colors.base03 },
-	-- -- 				},
-	-- -- 			},
-	-- -- 			window = { margin = { vertical = 0, horizontal = 1 } },
-	-- -- 			hide = {
-	-- -- 				cursorline = true,
-	-- -- 			},
-	-- -- 			render = function(props)
-	-- -- 				local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":t")
-	-- -- 				if vim.bo[props.buf].modified then
-	-- -- 					filename = "[+] " .. filename
-	-- -- 				end
-	--
-	-- -- 				local icon, color = require("nvim-web-devicons").get_icon_color(filename)
-	-- -- 				return { { icon, guifg = color }, { " " }, { filename } }
-	-- -- 			end,
-	-- -- 		})
-	-- -- 	end,
-	-- -- },
-	--
 	{
 		"folke/zen-mode.nvim",
 		cmd = "ZenMode",
@@ -190,11 +149,16 @@ return {
 		event = "VimEnter",
 		opts = function(_, opts)
 			local logo = [[
-███    ██ ███████ ██      ███████  ██████  ███    ██ 
-████   ██ ██      ██      ██      ██    ██ ████   ██ 
-██ ██  ██ █████   ██      ███████ ██    ██ ██ ██  ██ 
-██  ██ ██ ██      ██           ██ ██    ██ ██  ██ ██ 
-██   ████ ███████ ███████ ███████  ██████  ██   ████
+  ███▄    █ ▓█████  ██▓      ██████  ▒█████   ███▄    █ 
+ ██ ▀█   █ ▓█   ▀ ▓██▒    ▒██    ▒ ▒██▒  ██▒ ██ ▀█   █ 
+▓██  ▀█ ██▒▒███   ▒██░    ░ ▓██▄   ▒██░  ██▒▓██  ▀█ ██▒
+▓██▒  ▐▌██▒▒▓█  ▄ ▒██░      ▒   ██▒▒██   ██░▓██▒  ▐▌██▒
+▒██░   ▓██░░▒████▒░██████▒▒██████▒▒░ ████▓▒░▒██░   ▓██░
+░ ▒░   ▒ ▒ ░░ ▒░ ░░ ▒░▓  ░▒ ▒▓▒ ▒ ░░ ▒░▒░▒░ ░ ▒░   ▒ ▒ 
+░ ░░   ░ ▒░ ░ ░  ░░ ░ ▒  ░░ ░▒  ░ ░  ░ ▒ ▒░ ░ ░░   ░ ▒░
+   ░   ░ ░    ░     ░ ░   ░  ░  ░  ░ ░ ░ ▒     ░   ░ ░ 
+         ░    ░  ░    ░  ░      ░      ░ ░           ░ 
+
 ]]
 
 			logo = string.rep("\n", 8) .. logo .. "\n\n"

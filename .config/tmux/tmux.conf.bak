@@ -1,0 +1,53 @@
+set-environment -g PATH "/opt/homebrew/bin:/usr/local/bin:/bin:/usr/bin:/usr/sbin:/sbin"
+
+bind -n M-H previous-window
+bind -n M-L next-window
+
+set -g default-terminal 'screen-256color'
+set -g @catppuccin_flavour 'macchiato'
+set-option -ga terminal-overrides ",xterm-256color:Tc"
+
+set -g base-index 1
+set -g pane-base-index 1
+set-window-option -g pane-base-index 1
+set-option -g renumber-windows on
+
+# status bar
+# set -g status-right "#(pomo)"
+# set -g status-style "fg=#665c54"
+# set -g status-left-style "fg=#928374"
+#
+# set -g status-bg default
+set -g status-position top
+set -g status-interval 1
+set -g status-left ""
+
+set -g mouse on
+
+# disable status
+# set -g status off
+# set -g status on
+
+# count the panes from 1
+set -g base-index 1
+setw -g pane-base-index 1
+
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'catppuccin/tmux'
+set -g @plugin 'tmux-plugins/tmux-yank'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+
+set-window-option -g mode-keys vi
+
+bind-key -T copy-mode-vi v send-keys -X begin-selection
+bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+bind-key -T copy-moe-vi C-v send-keys -X rectangle-toggle
+
+bind '"' split-window -c "#{pane_current_path}"
+bind % split-window -h -c "#{pane_current_path}"
+
+# run -b '~/.tmux/plugins/tpm/tpm'
+run -b '/opt/homebrew/opt/tpm/share/tpm/tpm'
+
